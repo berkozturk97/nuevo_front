@@ -2,28 +2,16 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
 //import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-// import AlertModal from '../components/AlertModal/AlertModal';
-import axios from 'axios';
-import { history } from '../App';
-function Copyright() {
-    return (
-        <Typography variant="body2" color="textSecondary" align="center">
-            {'Copyright © '}
-            <Link color="inherit" href="https://material-ui.com/">
-                Sebear
-      </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
+import { addBook } from '../API/BookAPI'
+import AlertModal from '../Components/AlertModal';
+import SuccessModal from '../Components/SuccessModal';
+
+
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -31,12 +19,12 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        
+
     },
     form: {
         width: '100%', // Fix IE 11 issue.
         marginTop: theme.spacing(3),
-        
+
     },
     submit: {
         margin: theme.spacing(3, 0, 2),
@@ -68,7 +56,7 @@ const useStyles = makeStyles(theme => ({
         borderRadius: 10,
         backgroundColor: theme.palette.background.paper,
         border: '2px solid 191919',
-        
+
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
     },
@@ -78,15 +66,15 @@ const useStyles = makeStyles(theme => ({
     },
     helperText: {
         color: 'red'
-    }
+    },notchedOutline: {
+        borderWidth: "1px",
+        borderColor: "black !important"
+      }
 }));
 
 
 export default function CreatePage() {
     const classes = useStyles();
-    const [userInfo, setUserInfo] = React.useState("");
-    React.useEffect(() => {
-    }, [])
     const [values, setValues] = React.useState({
         namee: "",
         price: "",
@@ -95,82 +83,94 @@ export default function CreatePage() {
         author: "",
         publisher: "",
         showAlert: false,
+        showSuccess: false,
         alertInfo: ""
     });
-    const handleInputChange = e => { 
+    const handleInputChange = e => {
         const { name, value } = e.target
         setValues({ ...values, [name]: value })
     }
+    const AddBooks = async () => {
+        let body = {
+            name: values.namee,
+            productPhoto: values.productPhoto,
+            price: values.price,
+            description: values.description,
+            author: values.author,
+            publisher: values.publisher
+        }
+        console.log(body);
 
-    // const updateCard = async () => {
-    //     if (
-    //         values.creditCardNameSurname.trim().length === 0 ||
-    //         values.creditCardNo.trim().length === 0 ||
-    //         values.creditCardDate.trim().length === 0 ||
-    //         values.creditCardCvc.trim().length === 0
-    //     ) {
-    //         setValues({
-    //             ...values,
-    //             alertInfo: "Tüm alanları doğru girdiğinizden emin olunuz.",
-    //             showAlert: true
-    //         })
-    //     } else {
-    //         if (values.creditCardNameSurname.trim().length === 0 ||
-    //             values.creditCardNo.trim().length < 16 ||
-    //             values.creditCardDate.trim().length < 5 ||
-    //             values.creditCardCvc.trim().length < 3) {
-    //             alert('Bilgilerinizi kontrol ediniz.')
-    //             //Buraya güzel alert tasarla
-    //         } else {
-    //             let REQUEST_URL = 'http://goturapp.herokuapp.com/users/updateCardInfo/'+ userInfo.USER_ID;
-    //             let body = {
-    //                 //_id: userInfo.USER_ID,
-    //                 creditCardNo: values.creditCardNo,
-    //                 creditCardDate: values.creditCardDate,
-    //                 creditCardCvc: values.creditCardCvc,
-    //                 creditCardNameSurname: values.creditCardNameSurname 
-    //             }
-    //             console.log(body)
-    //             await axios.put(REQUEST_URL, body)
-    //                 .then(response => {
-    //                     console.log(response);
-    //                     setValues({
-    //                         ...values,
-    //                         alertInfo: "Bilgileriniz GoturPayment© guvencesi ile kayit edilmistir! Simdi ana sayfaya aktarilacaksiniz",
-    //                         showAlert: true
-    //                     })
-    //                     setTimeout(() => {
-    //                         history.push({ pathname: "/anasayfa"})
-    //                     }, 3000);
-                        
-    //                 })
-                    
-    //                 .catch(error => {
-    //                     console.log("sdfsd")
-    //                     console.log(error)
-    //                 })
-    //         }
-    //     }
-    // }
+        if (
+            values.productPhoto.trim().length === 0 ||
+            values.price.trim().length === 0 ||
+            values.namee.trim().length === 0 ||
+            values.publisher.trim().length === 0 ||
+            values.author.trim().length === 0 ||
+            values.description.trim().length === 0
+        ) {
+            setValues({
+                ...values,
+                alertInfo: "Girdiginiz bilgilerin dogrulugundan emin olunuz.",
+                showAlert: true
+            })
+        } else {
+            let body = {
+                name: values.namee,
+                productPhoto: values.productPhoto,
+                price: values.price,
+                description: values.description,
+                author: values.author,
+                publisher: values.publisher
+            }
+            let responseData = await addBook({ body: body });
+            if (responseData !== null || responseData !== undefined) {
+                setValues({
+                    ...values,
+                    successInfo: "Ürünü Başarıyla Eklediniz",
+                    showSuccess: true,
+                    author: "",
+                    productPhoto: "",
+                    namee: "",
+                    price: "",
+                    description: "",
+                    publisher: ""
+                })
 
+            }
+        }
+    }
     const handleClose = () => {
         setValues({
             ...values,
+            alertInfo: "Tüm alanları doğru girdiğinizden emin olunuz.",
             showAlert: false
+        })
+    };
+    const handleCloseSuccess = () => {
+        setValues({
+            ...values,
+            showSuccess: false
         })
     };
     return (
         <Container component="main" maxWidth="xs">
-            {/* <AlertModal openAlert={values.showAlert} closePopUp={handleClose} alertInfo={values.alertInfo} /> */}
+            <AlertModal openAlert={values.showAlert} closePopUp={handleClose} alertInfo={values.alertInfo} />
+            <SuccessModal openSuccess={values.showSuccess} closePopUpSuccess={handleCloseSuccess} successInfo={values.successInfo} />
             <CssBaseline />
             <div className={classes.paper}>
                 <Typography component="h1" variant="h5" style={{ color: '#191919' }}>
-                Ürün Ekle
+                    Ürün Ekle
                 </Typography>
                 <form className={classes.form} noValidate>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField
+                                InputProps={{
+                                    classes: {
+                                        notchedOutline: classes.notchedOutline
+                                    }
+                                }}
                                 value={values.namee}
                                 onChange={handleInputChange}
                                 variant="outlined"
@@ -185,13 +185,16 @@ export default function CreatePage() {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
-                                //error={values.errorpassword}
+                                InputProps={{
+                                    classes: {
+                                        notchedOutline: classes.notchedOutline
+                                    }
+                                }}
                                 value={values.price}
                                 onChange={handleInputChange}
                                 variant="outlined"
                                 required
                                 fullWidth
-                                //helperText="Şifre en az 7 haneli olmalıdır."
                                 name="price"
                                 label="Kitabin Fiyatı"
                                 id="price"
@@ -201,6 +204,11 @@ export default function CreatePage() {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
+                                InputProps={{
+                                    classes: {
+                                        notchedOutline: classes.notchedOutline
+                                    }
+                                }}
                                 error={false}
                                 value={values.description}
                                 onChange={handleInputChange}
@@ -215,6 +223,11 @@ export default function CreatePage() {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
+                                InputProps={{
+                                    classes: {
+                                        notchedOutline: classes.notchedOutline
+                                    }
+                                }}
                                 value={values.productPhoto}
                                 onChange={handleInputChange}
                                 error={false}
@@ -229,6 +242,11 @@ export default function CreatePage() {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
+                                InputProps={{
+                                    classes: {
+                                        notchedOutline: classes.notchedOutline
+                                    }
+                                }}
                                 value={values.author}
                                 onChange={handleInputChange}
                                 error={false}
@@ -238,11 +256,16 @@ export default function CreatePage() {
                                 required
                                 fullWidth
                                 id="author"
-                                label="Yazarin Ismi"
+                                label="Yazarin İsmi"
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
+                                InputProps={{
+                                    classes: {
+                                        notchedOutline: classes.notchedOutline
+                                    }
+                                }}
                                 value={values.publisher}
                                 onChange={handleInputChange}
                                 error={false}
@@ -257,7 +280,7 @@ export default function CreatePage() {
                         </Grid>
                     </Grid>
                     <Button
-                        // onClick={updateCard}
+                        onClick={AddBooks}
                         className={classes.submit}
                         style={{ backgroundColor: '#191919' }}
                         fullWidth
@@ -270,9 +293,6 @@ export default function CreatePage() {
                     </Grid>
                 </form>
             </div>
-            <Box mt={5}>
-                <Copyright />
-            </Box>
         </Container>
     );
 }

@@ -5,6 +5,7 @@ import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import { getBook } from '../API/BookAPI';
 import Container from '@material-ui/core/Container';
+import { history } from '../App';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -59,7 +60,7 @@ const useStyles = makeStyles(theme => ({
   container: {
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
-},
+  },
 }));
 
 
@@ -67,6 +68,7 @@ const useStyles = makeStyles(theme => ({
 export default function MainPage() {
   const classes = useStyles();
   const [book, setBook] = useState([]);
+  const [query, setQuery] = useState("");
   useEffect(() => {
     getBooks();
   }, [])
@@ -78,14 +80,23 @@ export default function MainPage() {
       console.log(responseData)
     }
   }
+
+  const goDetail = (item) => {
+    history.push({ pathname: "/detail", search: "/" + item._id, state: {item: item}})
+  }
+
   const renderItems = () => {
     return book.map((data, index) => {
       return <BookCard key={index}
         title={data.name}
         productPhoto={data.productPhoto}
         price={data.price}
+        onClick={() => goDetail(data)}
       />
     })
+  }
+  const renderFilteredItems = () => {
+    
   }
 
   return (
@@ -96,6 +107,7 @@ export default function MainPage() {
         </div>
         <InputBase
           placeholder="Search…"
+          value={query}
           classes={{
             root: classes.inputRoot,
             input: classes.inputInput,
