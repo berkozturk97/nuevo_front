@@ -1,18 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import DetailedBookCard from '../Components/DetailedBookCard';
 import { getSelectedBook } from '../API/BookAPI';
-import { makeStyles } from '@material-ui/core/styles';
 
 
-const useStyles = makeStyles(theme => ({
-    container: {
-      paddingTop: theme.spacing(4),
-      paddingBottom: theme.spacing(4),
-    },
-  }));
   
 export default function DetailPage(props) {
-    const classes = useStyles();
 
     const [book, setBook] = useState([]);
     useEffect(() => {

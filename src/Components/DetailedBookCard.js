@@ -35,10 +35,10 @@ export default function DetailedBookCard(props) {
               <Typography gutterBottom variant="h5" component="h2">
                 {props.title}
               </Typography>
-              <Typography gutterBottom variant="h5" component="h2">
+              <Typography gutterBottom variant="body2" component="h2">
                 {props.desc}
               </Typography>
-               <Typography gutterBottom variant="h5" component="h2">
+               <Typography gutterBottom variant="h6" component="h2">
                 {props.author}
               </Typography>
               <Typography variant="body2" color="textSecondary" component="p">
