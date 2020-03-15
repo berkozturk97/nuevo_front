@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DetailedBookCard from '../Components/DetailedBookCard';
 import { getSelectedBook } from '../API/BookAPI';
-import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
 
 

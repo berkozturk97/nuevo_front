@@ -14,7 +14,8 @@ const useStyles = makeStyles({
   },
   media: {
     height: 150,
-    width: 200
+    width: 200,
+    backgroundSize: 100
   },
 });
 
@@ -32,11 +33,11 @@ export default function BookCard(props) {
               title="Contemplative Reptile"
             />
             <CardContent>
-              <Typography gutterBottom variant="h5" component="h2">
+              <Typography gutterBottom variant="body2" component="h2">
                 {props.title}
               </Typography>
               <Typography variant="body2" color="textSecondary" component="p">
-                {props.price}
+                {props.price}₺
               </Typography>
             </CardContent>
           </CardActionArea>

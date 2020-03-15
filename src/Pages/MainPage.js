@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import BookCard from '../Components/BookCard'
 import { fade, makeStyles } from '@material-ui/core/styles';
 import InputBase from '@material-ui/core/InputBase';
-import SearchIcon from '@material-ui/icons/Search';
 import { getBook } from '../API/BookAPI';
 import Container from '@material-ui/core/Container';
 import { history } from '../App';
@@ -68,11 +67,14 @@ const useStyles = makeStyles(theme => ({
 export default function MainPage() {
   const classes = useStyles();
   const [book, setBook] = useState([]);
-  const [query, setQuery] = useState("");
+  const [search, setSearch] = useState(null);
   useEffect(() => {
     getBooks();
   }, [])
 
+  const handleChange = (event) => {
+    setSearch(event.target.value);
+  }
   const getBooks = async () => {
     let responseData = await getBook();
     if (responseData !== null || responseData !== undefined) {
@@ -82,32 +84,41 @@ export default function MainPage() {
   }
 
   const goDetail = (item) => {
-    history.push({ pathname: "/detail", search: "/" + item._id, state: {item: item}})
+    history.push({ pathname: "/detail", search: "/" + item._id, state: { item: item } })
   }
 
-  const renderItems = () => {
-    return book.map((data, index) => {
-      return <BookCard key={index}
-        title={data.name}
-        productPhoto={data.productPhoto}
-        price={data.price}
-        onClick={() => goDetail(data)}
-      />
-    })
-  }
-  const renderFilteredItems = () => {
-    
-  }
+  // const renderItems = () => {
+  //   return book.map((data, index) => {
+  //     return <BookCard key={index}
+  //       title={data.name}
+  //       productPhoto={data.productPhoto}
+  //       price={data.price}
+  //       onClick={() => goDetail(data)}
+  //     />
+  //   })
+  // }
+  const renderFilteredItems = book.filter(data => {
+    if(search === null) return data
+    else if(data.name.toLowerCase().includes(search.toLowerCase()) || data.author.toLowerCase().includes(search.toLowerCase()) || data.publisher.toLowerCase().includes(search.toLowerCase())) {
+      return data
+    }
+  }).map((data,index) => {
+    return <BookCard key={index}
+    title={data.name}
+    productPhoto={data.productPhoto}
+    price={data.price}
+    onClick={() => goDetail(data)}
+  />
+  })
 
   return (
     <div>
       <div className={classes.search}>
-        <div className={classes.searchIcon}>
-          <SearchIcon />
-        </div>
         <InputBase
+          style={{borderBlockColor: 'black'}}
           placeholder="Search…"
-          value={query}
+          value={search}
+          onChange={handleChange}
           classes={{
             root: classes.inputRoot,
             input: classes.inputInput,
@@ -116,7 +127,7 @@ export default function MainPage() {
         />
       </div>
       <Container maxWidth="lg" className={classes.container} style={{ flexDirection: 'column', flex: 1 }}>
-        {renderItems()}
+        {renderFilteredItems}
       </Container>
 
     </div>

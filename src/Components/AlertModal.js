@@ -21,8 +21,8 @@ const useStyles = makeStyles(theme => ({
         padding: theme.spacing(2, 4, 3),
     },
     alertButton: {
-        backgroundColor: '#5D3DBD',
-        color: '#FFD10D'
+        backgroundColor: '#191919',
+        color: '#FAFAFA'
     },
     helperText: {
         color: 'red'
@@ -48,7 +48,7 @@ export default function AlertModal(props) {
         >
             <div className={classes.paperModal}>
                 <div className={classes.paper} style={{ marginTop: 0 }}>
-                    <ErrorIcon style={{ alignSelf: 'center', marginTop: 0, fontSize: 60, marginBottom: 20, color: '#5D3DBD' }} />
+                    <ErrorIcon style={{ alignSelf: 'center', marginTop: 0, fontSize: 60, marginBottom: 20, color: '#191919' }} />
                     <h2 id="server-modal-title" className={classes.paper} style={{ marginTop: 0 }}>Uyarı</h2>
                     <p id="server-modal-description" className={classes.paper} style={{ marginTop: 0 }}>{props.alertInfo}</p>
                     <Button

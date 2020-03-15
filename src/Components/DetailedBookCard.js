@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -13,7 +13,8 @@ const useStyles = makeStyles({
   },
   media: {
     height: 200,
-    width: 200
+    width: 500,
+    backgroundSize: 100
   },
 });
 
@@ -44,7 +45,7 @@ export default function DetailedBookCard(props) {
                 {props.publisher}
               </Typography> 
               <Typography variant="body2" color="textSecondary" component="p">
-                {props.price}
+                {props.price}₺
               </Typography>
             </CardContent>
           </CardActionArea>
